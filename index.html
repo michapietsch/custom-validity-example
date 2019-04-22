@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Custom Validity</title>
+  </head>
+  <body>
+    <form id="sign_up_form">
+      <div>
+        <label>Username:</label>
+        <input type="text" id="username" class="form-input" required />
+        <span></span>
+      </div>
+    </form>
+
+    <script>
+      // This can handle your custom validation error presentation,
+      // e.g. set red color, place messages right next to inputs...:
+      function validate() {
+        let formValidates = true;
+
+        document
+          .querySelectorAll("#sign_up_form .form-input")
+          .forEach(function(element) {
+            if (!element.valid) {
+              formValidates = false;
+
+              // Display the message:
+              element.nextSibling.textContent = element.validationMessage;
+            }
+
+            // We can check specifically if the error is a custom error:
+            if (element.validity.customError) {
+              // ...
+            }
+          });
+
+        // Return a boolean here if the entire form is valid:
+        return formValidates;
+      }
+
+      // We can run validation before the form is submitted:
+      document
+        .querySelector("#sign_up_form")
+        .addEventListener("submit", function(e) {
+          if (!validate()) {
+            e.preventDefault();
+            return;
+          }
+        });
+
+      // We can add a custom validation check,
+      // e.g. make an API call to check if a username is available
+      document
+        .querySelector("#username")
+        .addEventListener("input", function(e) {
+          let input = e.target;
+
+          // Remove a possible previous error state:
+          input.setCustomValidity("");
+          input.nextSibling.textContent = "";
+
+          // Dummy code, replacing an API call:
+          if (input.value == "existingUsername") {
+            // No more dummy code:
+            input.setCustomValidity("Username is already taken");
+
+            // Optional: trigger validation even while the user is typing:
+            validate();
+          }
+        });
+    </script>
+  </body>
+</html>
